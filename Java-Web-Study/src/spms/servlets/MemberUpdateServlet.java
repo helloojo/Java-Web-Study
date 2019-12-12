@@ -8,21 +8,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(
-    urlPatterns = { "/member/update" }, 
-    initParams = {
-    @WebInitParam(name = "driver", value = "com.mysql.jdbc.Driver"),
-    @WebInitParam(name = "url", value = "jdbc:mysql://localhost/studydb?useUnicode=true&characterEncoding=utf8"),
-    @WebInitParam(name = "username", value = "study"), 
-    @WebInitParam(name = "password", value = "study") 
-    })
+@WebServlet("/member/update")
 public class MemberUpdateServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
@@ -32,9 +25,10 @@ public class MemberUpdateServlet extends HttpServlet {
     Statement stmt = null;
     ResultSet rs = null;
     try {
-      Class.forName(this.getInitParameter("driver"));
-      conn = DriverManager.getConnection(this.getInitParameter("url"), this.getInitParameter("username"),
-          this.getInitParameter("password"));
+      ServletContext sc = this.getServletContext();
+      Class.forName(sc.getInitParameter("driver"));
+      conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"),
+          sc.getInitParameter("password"));
       stmt = conn.createStatement();
       rs = stmt.executeQuery("SELECT MNO,EMAIL,MNAME,CRE_DATE FROM MEMBERS WHERE MNO=" + request.getParameter("no"));
       rs.next();
@@ -49,6 +43,8 @@ public class MemberUpdateServlet extends HttpServlet {
       out.println("이메일: <input type='text' name='email' value='" + rs.getString("EMAIL") + "'><br>");
       out.println("가입일: " + rs.getDate("CRE_DATE") + "<br>");
       out.println("<input type='submit' value='저장'>");
+      out.println(
+          "<input type='button' value='삭제' onclick='location.href=\"delete?no=" + request.getParameter("no") + "\"'>");
       out.println("<input type='button' value='취소' onclick='location.href=\"list\"'>");
       out.println("</form");
       out.println("</body></html>");
@@ -83,9 +79,10 @@ public class MemberUpdateServlet extends HttpServlet {
     Connection conn = null;
     PreparedStatement stmt = null;
     try {
-      Class.forName(this.getInitParameter("driver"));
-      conn = DriverManager.getConnection(this.getInitParameter("url"), this.getInitParameter("username"),
-          this.getInitParameter("password"));
+      ServletContext sc = this.getServletContext();
+      Class.forName(sc.getInitParameter("driver"));
+      conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"),
+          sc.getInitParameter("password"));
       stmt = conn.prepareStatement("UPDATE MEMBERS SET EMAIL=?,MNAME=?,MOD_DATE=NOW() WHERE MNO=?");
       stmt.setString(1, request.getParameter("email"));
       stmt.setString(2, request.getParameter("name"));
