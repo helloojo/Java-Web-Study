@@ -26,9 +26,7 @@ public class MemberUpdateServlet extends HttpServlet {
     ResultSet rs = null;
     try {
       ServletContext sc = this.getServletContext();
-      Class.forName(sc.getInitParameter("driver"));
-      conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"),
-          sc.getInitParameter("password"));
+      conn = (Connection) sc.getAttribute("conn");
       stmt = conn.createStatement();
       rs = stmt.executeQuery("SELECT MNO,EMAIL,MNAME,CRE_DATE FROM MEMBERS WHERE MNO=" + request.getParameter("no"));
       rs.next();
@@ -64,12 +62,6 @@ public class MemberUpdateServlet extends HttpServlet {
         }
       } catch (Exception e) {
       }
-      try {
-        if (conn != null) {
-          conn.close();
-        }
-      } catch (Exception e) {
-      }
     }
   }
 
@@ -79,9 +71,7 @@ public class MemberUpdateServlet extends HttpServlet {
     PreparedStatement stmt = null;
     try {
       ServletContext sc = this.getServletContext();
-      Class.forName(sc.getInitParameter("driver"));
-      conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"),
-          sc.getInitParameter("password"));
+      conn = (Connection) sc.getAttribute("conn");
       stmt = conn.prepareStatement("UPDATE MEMBERS SET EMAIL=?,MNAME=?,MOD_DATE=NOW() WHERE MNO=?");
       stmt.setString(1, request.getParameter("email"));
       stmt.setString(2, request.getParameter("name"));
@@ -96,12 +86,6 @@ public class MemberUpdateServlet extends HttpServlet {
       try {
         if (stmt != null) {
           stmt.close();
-        }
-      } catch (Exception e) {
-      }
-      try {
-        if (conn != null) {
-          conn.close();
         }
       } catch (Exception e) {
       }

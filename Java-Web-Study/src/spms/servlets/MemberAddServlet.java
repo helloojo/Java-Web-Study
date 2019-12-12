@@ -39,10 +39,8 @@ public class MemberAddServlet extends HttpServlet {
     Connection conn = null;
     PreparedStatement stmt = null;
     try {
-      ServletContext sc=this.getServletContext();
-      Class.forName(sc.getInitParameter("driver"));
-      conn = DriverManager.getConnection(sc.getInitParameter("url"), sc.getInitParameter("username"),
-          sc.getInitParameter("password"));
+      ServletContext sc = this.getServletContext();
+      conn = (Connection) sc.getAttribute("conn");
       stmt = conn.prepareStatement("INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE) VALUE(?,?,?,NOW(),NOW())");
       stmt.setString(1, request.getParameter("email"));
       stmt.setString(2, request.getParameter("name"));
@@ -56,12 +54,6 @@ public class MemberAddServlet extends HttpServlet {
       try {
         if (stmt != null) {
           stmt.close();
-        }
-      } catch (Exception e) {
-      }
-      try {
-        if (conn != null) {
-          conn.close();
         }
       } catch (Exception e) {
       }
