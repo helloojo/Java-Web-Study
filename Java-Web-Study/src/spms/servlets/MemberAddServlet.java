@@ -1,4 +1,4 @@
-package spms.servlet;
+package spms.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -49,14 +49,7 @@ public class MemberAddServlet extends HttpServlet {
       stmt.setString(3, request.getParameter("password"));
       stmt.executeUpdate();
 
-      response.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = response.getWriter();
-      out.println("<html><head><title>회원등록결과</title></head>");
-      out.println("<body>");
-      out.println("<p>등록 성공입니다!</p>");
-      out.println("</body></html>");
-
-      response.addHeader("Refresh", "1;url=list");
+      response.sendRedirect("list");
     } catch (Exception e) {
       throw new ServletException(e);
     } finally {

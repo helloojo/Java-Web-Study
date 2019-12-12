@@ -1,4 +1,4 @@
-package spms.servlet;
+package spms.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -37,8 +37,8 @@ public class MemberListServlet extends GenericServlet {
       out.println("<body><h1>회원목록</h1>");
       out.println("<p><a href='add'>신규 회원</a></p>");
       while (rs.next()) {
-        out.println(rs.getInt("MNO") + "," + rs.getString("MNAME") + "," + rs.getString("EMAIL") + ","
-            + rs.getDate("CRE_DATE") + "<br>");
+        out.println(rs.getInt("MNO") + "," + "<a href='update?no=" + rs.getInt("MNO") + "'>" + rs.getString("MNAME")
+            + "</a>," + rs.getString("EMAIL") + "," + rs.getDate("CRE_DATE") + "<br>");
       }
       out.println("</body></html>");
     } catch (Exception e) {
