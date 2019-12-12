@@ -1,8 +1,6 @@
 package spms.servlets;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -23,10 +21,8 @@ public class MemberUpdateServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
       ServletContext sc = this.getServletContext();
-      Connection conn = (Connection) sc.getAttribute("conn");
 
-      MemberDao memberDao = new MemberDao();
-      memberDao.setConnection(conn);
+      MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
 
       request.setAttribute("member", memberDao.selectOne(Integer.parseInt(request.getParameter("no"))));
 
@@ -43,14 +39,10 @@ public class MemberUpdateServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    Connection conn = null;
-    PreparedStatement stmt = null;
     try {
       ServletContext sc = this.getServletContext();
-      conn = (Connection) sc.getAttribute("conn");
 
-      MemberDao memberDao = new MemberDao();
-      memberDao.setConnection(conn);
+      MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
 
       memberDao.update(new Member().setEmail(request.getParameter("email")).setName(request.getParameter("name"))
           .setNo(Integer.parseInt(request.getParameter("no"))));
@@ -60,13 +52,6 @@ public class MemberUpdateServlet extends HttpServlet {
       RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
       request.setAttribute("error", e);
       rd.forward(request, response);
-    } finally {
-      try {
-        if (stmt != null) {
-          stmt.close();
-        }
-      } catch (Exception e) {
-      }
     }
   }
 
