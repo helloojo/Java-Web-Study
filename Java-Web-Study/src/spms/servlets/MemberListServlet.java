@@ -2,10 +2,6 @@ package spms.servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -15,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import spms.vo.Member;
+import spms.dao.MemberDao;
 
 @WebServlet("/member/list")
 public class MemberListServlet extends HttpServlet {
@@ -23,27 +19,16 @@ public class MemberListServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    Connection conn = null;
-    Statement stmt = null;
-    ResultSet rs = null;
-
     try {
       ServletContext sc = this.getServletContext();
-      conn = (Connection) sc.getAttribute("conn");
-      stmt = conn.createStatement();
-      rs = stmt.executeQuery("SELECT MNO,MNAME,EMAIL,CRE_DATE FROM MEMBERS order by MNO ASC");
+      Connection conn = (Connection) sc.getAttribute("conn");
 
-      response.setContentType("text/html; charset=UTF-8");
+      MemberDao memberDao = new MemberDao();
+      memberDao.setConnection(conn);
 
-      ArrayList<Member> members = new ArrayList<Member>();
+      request.setAttribute("members", memberDao.selectList());
 
-      while (rs.next()) {
-        members.add(new Member().setNo(rs.getInt("MNO")).setName(rs.getString("MNAME")).setEmail(rs.getString("EMAIL"))
-            .setCreatedDate(rs.getDate("CRE_DATE")));
-      }
-
-      request.setAttribute("members", members);
-
+      response.setContentType("text/html;charset=UTF-8");
       RequestDispatcher rd = request.getRequestDispatcher("/member/MemberList.jsp");
 
       rd.include(request, response); // include는 작업 종료 후 제어권을 다시 받음
@@ -51,19 +36,6 @@ public class MemberListServlet extends HttpServlet {
       request.setAttribute("error", e);
       RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
       rd.forward(request, response); // 서블릿의 제어권 완전 넘겨줌
-    } finally {
-      try {
-        if (rs != null) {
-          rs.close();
-        }
-      } catch (Exception e) {
-      }
-      try {
-        if (stmt != null) {
-          stmt.close();
-        }
-      } catch (Exception e) {
-      }
     }
   }
 }
