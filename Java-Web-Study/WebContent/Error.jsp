@@ -12,10 +12,8 @@
 만약 계속해서 이 문제가 발생한다면 시스템 운영팀(사내번호: 8282)에 연락하기 바랍니다.
 </p>
 <p>
-<%
-Exception e=(Exception)request.getAttribute("error");
-%>
-에러내용: <%=e.getMessage()%>
+<jsp:useBean id="error" scope="request" class="java.lang.Exception"/>
+에러내용: <%=error.getMessage()%>
 </p>
 </body>
 </html>

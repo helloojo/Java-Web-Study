@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,7 +29,9 @@ public class MemberDeleteServlet extends HttpServlet {
 
       response.sendRedirect("list");
     } catch (Exception e) {
-      throw new ServletException(e);
+      RequestDispatcher rd=request.getRequestDispatcher("/Error.jsp");
+      request.setAttribute("error", e);
+      rd.forward(request, response);
     } finally {
       try {
         if (stmt != null) {
