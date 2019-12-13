@@ -2,7 +2,6 @@ package spms.servlets;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,19 +20,13 @@ public class MemberUpdateServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
       ServletContext sc = this.getServletContext();
-
       MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
 
       request.setAttribute("member", memberDao.selectOne(Integer.parseInt(request.getParameter("no"))));
 
-      response.setContentType("text/html;charset=UTF-8");
-
-      RequestDispatcher rd = request.getRequestDispatcher("/member/MemberUpdateForm.jsp");
-      rd.include(request, response);
+      request.setAttribute("viewUrl", "/member/MemberUpdateForm.jsp");
     } catch (Exception e) {
-      RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-      request.setAttribute("error", e);
-      rd.forward(request, response);
+      throw new ServletException(e);
     }
   }
 
@@ -41,17 +34,14 @@ public class MemberUpdateServlet extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
       ServletContext sc = this.getServletContext();
-
       MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
 
-      memberDao.update(new Member().setEmail(request.getParameter("email")).setName(request.getParameter("name"))
-          .setNo(Integer.parseInt(request.getParameter("no"))));
+      Member member = (Member) request.getAttribute("member");
+      memberDao.update(member);
 
-      response.sendRedirect("list");
+      request.setAttribute("viewUrl", "redirect:list.do");
     } catch (Exception e) {
-      RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-      request.setAttribute("error", e);
-      rd.forward(request, response);
+      throw new ServletException(e);
     }
   }
 
