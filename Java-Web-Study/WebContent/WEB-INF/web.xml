@@ -5,6 +5,11 @@
 	version="3.1">
 	<display-name>Java-Web-Study</display-name>
 
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/application-context.properties</param-value>
+	</context-param>
+
 	<resource-ref>
 		<res-ref-name>jdbc/studydb</res-ref-name>
 		<res-type>javax.sql.DataSource</res-type>
