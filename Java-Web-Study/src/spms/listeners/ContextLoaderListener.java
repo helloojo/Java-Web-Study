@@ -13,7 +13,6 @@ import spms.controls.MemberAddController;
 import spms.controls.MemberDeleteController;
 import spms.controls.MemberListController;
 import spms.controls.MemberUpdateController;
-import spms.dao.MemberDao;
 import spms.dao.MySqlMemberDao;
 
 @WebListener
