@@ -4,6 +4,10 @@
 	"http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
+	<settings>
+		<setting name="logImpl" value="LOG4J" />
+	</settings>
+
 	<typeAliases>
 		<typeAlias type="spms.vo.Project" alias="project" />
 		<typeAlias type="spms.vo.Member" alias="member" />
@@ -13,7 +17,8 @@
 		<environment id="development">
 			<transactionManager type="JDBC" />
 			<dataSource type="JNDI">
-				<property name="data_source" value="java:comp/env/jdbc/studydb"/>
+				<property name="data_source"
+					value="java:comp/env/jdbc/studydb" />
 			</dataSource>
 		</environment>
 	</environments>
