@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,7 +42,6 @@ public class DispatcherServlet extends HttpServlet {
       }
 
       String viewUrl = pageController.execute(model);
-
       for (String key : model.keySet()) {
         request.setAttribute(key, model.get(key));
       }
