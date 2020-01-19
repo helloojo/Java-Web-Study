@@ -20,16 +20,25 @@ public class ApplicationContext {
     return objTable.get(key);
   }
 
-  public ApplicationContext(String propertiesPath) throws Exception {
+  public void addBean(String name, Object obj) {
+    objTable.put(name, obj);
+  }
+
+  public void prepareObjectsByAnnotation(String basePackage) throws Exception {
+    Reflections reflector = new Reflections(basePackage);
+
+    Set<Class<?>> list = reflector.getTypesAnnotatedWith(Component.class);
+    String key = null;
+    for (Class<?> clazz : list) {
+      key = clazz.getAnnotation(Component.class).value();
+      objTable.put(key, clazz.getConstructor().newInstance());
+    }
+  }
+
+  public void prepareObjectsByProperties(String propertiesPath) throws Exception {
     Properties props = new Properties();
     props.load(new FileReader(propertiesPath));
 
-    prepareObjects(props);
-    prepareAnnotationObjects();
-    injectDependency();
-  }
-
-  private void prepareObjects(Properties props) throws Exception {
     Context ctx = new InitialContext();
     String key = null;
     String value = null;
@@ -45,18 +54,7 @@ public class ApplicationContext {
     }
   }
 
-  private void prepareAnnotationObjects() throws Exception {
-    Reflections reflector = new Reflections("");
-
-    Set<Class<?>> list = reflector.getTypesAnnotatedWith(Component.class);
-    String key = null;
-    for (Class<?> clazz : list) {
-      key = clazz.getAnnotation(Component.class).value();
-      objTable.put(key, clazz.getConstructor().newInstance());
-    }
-  }
-
-  private void injectDependency() throws Exception {
+  public void injectDependency() throws Exception {
     for (String key : objTable.keySet()) {
       if (!key.startsWith("jndi.")) {
         callSetter(objTable.get(key));
